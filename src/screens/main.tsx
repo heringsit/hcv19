@@ -64,9 +64,9 @@ function Main(): any {
         let totalScore = age + crp + ldh + hemo;
         setTotalScore(totalScore);
         if(totalScore >= 9){
-            setResultString("중증 폐암 전이 가능성이 높은 환자입니다.");
+            setResultString("중증 폐렴 전이 가능성이 높은 환자입니다.");
         }else{
-            setResultString("중증 폐암 전이 가능성이 낮은 환자입니다.");
+            setResultString("중증 폐렴 전이 가능성이 낮은 환자입니다.");
         }
     }
     
