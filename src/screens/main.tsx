@@ -19,6 +19,7 @@ function Main(): any {
     const [hemo, setHemo] = React.useState(-1);
     const [totalScore, setTotalScore] = React.useState(0);
     const [resultString, setResultString] = React.useState("");
+    const [resultScoreString, setResultScoreString] = React.useState("");
 
     const handleAgeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         let selectVal = Number(event.target.value)
@@ -60,7 +61,6 @@ function Main(): any {
             return;
         }
 
-
         let totalScore = age + crp + ldh + hemo;
         setTotalScore(totalScore);
         if(totalScore >= 9){
@@ -68,6 +68,21 @@ function Main(): any {
         }else{
             setResultString("중증 폐렴 전이 가능성이 낮은 환자입니다.");
         }
+        
+        setResultScoreString(`위험도 지수: ${totalScore}`);
+
+        const patientDtoObj  = {
+            age:age,
+            crp:crp,
+            ldh:ldh,
+            hemo:hemo
+        }
+
+        console.log("patientDtoObj >>>>>> ", patientDtoObj)
+
+        axios.post(comm.SERVER_URL+"/patient", patientDtoObj).then(res => {
+            console.log(' res >> ', res);
+        });
     }
     
     const handleInit = (ev:any) => {
@@ -76,6 +91,7 @@ function Main(): any {
         setLdh(-1);
         setHemo(-1);
         setResultString("");
+        setResultScoreString("");
     } 
 
     return (
@@ -121,6 +137,7 @@ function Main(): any {
                 <Button color="secondary" variant="outlined" size="medium" onClick={handleInit} style={{marginLeft:15}}>초기화</Button>
             </div>
             <div style={{display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'center', marginTop:15 }}>
+                {totalScore >= 9 ? <p style={{ color: 'red', fontWeight: "bold" }}>{resultScoreString}</p> : <p style={{ color: 'green' }}>{resultScoreString}</p>}
                 {totalScore >= 9 ? <p style={{color:'red', fontWeight:"bold"}}>{resultString}</p> : <p style={{color:'green'}}>{resultString}</p>}
             </div>
 

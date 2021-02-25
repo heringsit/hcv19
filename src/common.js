@@ -1,5 +1,5 @@
 const comm = {
-    SERVER_URL: "http://localhost:6000"
+    SERVER_URL: "http://localhost:4000"
 }
 
 export default comm;

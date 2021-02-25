@@ -13,13 +13,22 @@ import { Link, useHistory } from 'react-router-dom';
 import Snackbar from '@material-ui/core/Snackbar';
 import { useForm } from "react-hook-form";
 
+
 function Main2(): any {
     const [age, setAge] = React.useState(-1);
     const [crp, setCrp] = React.useState(-1);
     const [ldh, setLdh] = React.useState(-1);
     const [hemo, setHemo] = React.useState(-1);
+
+    const [realCrp, setRealcrp] = React.useState(-1);
+    const [realLdh, setRealldh] = React.useState(-1);
+    const [realHemo, setRealhemo] = React.useState(-1);
+
+
+
     const [totalScore, setTotalScore] = React.useState(0);
     const [resultString, setResultString] = React.useState("");
+    const [resultScoreString, setResultScoreString] = React.useState("");
 
     const crpInput : any = useRef<HTMLDivElement>(null);
     const ldhInput : any = useRef<HTMLDivElement>();
@@ -31,19 +40,22 @@ function Main2(): any {
     };
 
     const handleCRPChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setRealcrp(Number(event.target.value));
         let inputVal = Number(event.target.value);
-        console.log(" inputVal >> ", inputVal);
+        console.log(" inputVal CRP >> ", inputVal);
         if(inputVal < 1.4){
             inputVal = 0;
         }else{
             inputVal = 3;
-        }
+        }  
         setCrp(inputVal);
+
     };
 
     const handleLDHChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setRealldh(Number(event.target.value));
         let inputVal = Number(event.target.value);
-        console.log(" inputVal >> ", inputVal);
+        console.log(" inputVal LDH >> ", inputVal);
         if(inputVal < 500){
             inputVal = 0;
         }else if(inputVal < 700){
@@ -55,8 +67,9 @@ function Main2(): any {
     };
 
     const handleHemoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setRealhemo(Number(event.target.value));
         let inputVal = Number(event.target.value);
-        console.log(" inputVal >> ", inputVal);
+        console.log(" inputVal Hemo >> ", inputVal);
         if(inputVal < 13.3){
             inputVal = 0;
         }else{
@@ -84,8 +97,7 @@ function Main2(): any {
             console.log(" hemoglobin을 입력하세요. ")
             return;
         }
-
-
+        
         let totalScore = age + crp + ldh + hemo;
         setTotalScore(totalScore);
         if (totalScore >= 9) {
@@ -93,6 +105,22 @@ function Main2(): any {
         } else {
             setResultString("중증 폐렴 전이 가능성이 낮은 환자입니다.");
         }
+
+        setResultScoreString(`위험도 지수: ${totalScore}`);
+
+        const patientDtoObj  = {
+            age:age,
+            crp:realCrp,
+            ldh:realLdh,
+            hemo:realHemo
+        }
+
+        console.log("patientDtoObj >>>>>> ", patientDtoObj)
+
+        axios.post(comm.SERVER_URL+"/patient", patientDtoObj).then(res => {
+            console.log(' res >> ', res);
+        });
+
     }
 
     const handleInit = (ev: any) => {
@@ -101,8 +129,7 @@ function Main2(): any {
         crpInput.current.value = "";
         ldhInput.current.value = "";
         hemoInput.current.value = "";
-
-
+        setResultScoreString("");
     }
 
     return (
@@ -178,6 +205,7 @@ function Main2(): any {
                 <Button color="secondary" variant="outlined" size="medium" onClick={handleInit} style={{ marginLeft: 15 }}>초기화</Button>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginTop: 15 }}>
+                {totalScore >= 9 ? <p style={{ color: 'red', fontWeight: "bold" }}>{resultScoreString}</p> : <p style={{ color: 'green' }}>{resultScoreString}</p>}
                 {totalScore >= 9 ? <p style={{ color: 'red', fontWeight: "bold" }}>{resultString}</p> : <p style={{ color: 'green' }}>{resultString}</p>}
             </div>
 
