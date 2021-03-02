@@ -5,6 +5,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import {Button} from '@material-ui/core';
+import './main.css';
 
 import axios from 'axios';
 import comm from '../common';
@@ -94,22 +95,37 @@ function Main(): any {
         setResultScoreString("");
     } 
 
+
     return (
         <div style={{display:'flex', flexDirection:'column', margin:25 }}>
             <div style={{marginTop:10}}>환자 검진 정보를 체크해 주세요</div>
             <FormControl component="fieldset" style={{marginTop:20}}>
-                <FormLabel component="legend" style={{fontWeight:'bold', color:'black', fontSize:17.5}}>Age(years)</FormLabel>
-                <RadioGroup aria-label="age" name="age" value={age} onChange={handleAgeChange} style={{padding:5}}>
-                    <FormControlLabel value={0} control={<Radio />} label="50 미만" />
-                    <FormControlLabel value={4} control={<Radio />} label="50대(50-59)" />
-                    <FormControlLabel value={5} control={<Radio />} label="60대(60-69)" />
-                    <FormControlLabel value={7} control={<Radio />} label="70대(70-79)" />
-                    <FormControlLabel value={10} control={<Radio />} label="80대(>=80) 이상" />
-                </RadioGroup>
+                <div className='label-div'>
+                    <span className='label-span'>Age(years)</span>
+                    <span className='score-span'>{age === -1 ? "" : `score: ${age}`}</span>
+                </div>
+
+                <div style={{display:'flex', flexDirection:'row'}}>
+                    <RadioGroup aria-label="age" name="age" value={age} onChange={handleAgeChange} style={{padding:5}}>
+                        <FormControlLabel value={0} control={<Radio />} label="50 미만" />
+                        <FormControlLabel value={4} control={<Radio />} label="50대(50-59)" />
+                        <FormControlLabel value={5} control={<Radio />} label="60대(60-69)" />
+                        <FormControlLabel value={7} control={<Radio />} label="70대(70-79)" />
+                        <FormControlLabel value={10} control={<Radio />} label="80대(>=80) 이상" />
+                    </RadioGroup>
+                    {/* <div style={{display:'flex', flexDirection:'column', marginLeft:25}}>
+                        <div style={{height:180}}></div>
+                        <span style={{fontSize:15}}>{age === -1 ? "" : `score: ${age}`}</span>
+                    </div> */}
+                </div>
+
             </FormControl>
 
             <FormControl component="fieldset" style={{marginTop:15}}>
-                <FormLabel component="legend" style={{fontWeight:'bold', color:'black', fontSize:17.5}}>C-reactive protein(mg/dL)</FormLabel>
+                <div className='label-div'>
+                    <span className='label-span'>C-reactive protein(mg/dL)</span>
+                    <span className='score-span'>{crp === -1 ? "" : `score: ${crp}`}</span>
+                </div>
                 <RadioGroup aria-label="crp" name="crp" value={crp} onChange={handleCRPChange} style={{padding:5}}>
                     <FormControlLabel value={0} control={<Radio />} label="< 1.4" />
                     <FormControlLabel value={3} control={<Radio />} label=">= 1.4" />
@@ -117,7 +133,10 @@ function Main(): any {
             </FormControl>
 
             <FormControl component="fieldset" style={{marginTop:15}}>
-                <FormLabel component="legend" style={{fontWeight:'bold', color:'black', fontSize:17.5}}>Lactate dehydrogenase(U/L)</FormLabel>
+                <div className='label-div'>
+                    <span className='label-span'>Lactate dehydrogenase(U/L)</span>
+                    <span className='score-span'>{ldh === -1 ? "" : `score: ${ldh}`}</span>
+                </div>
                 <RadioGroup aria-label="ldh" name="ldh" value={ldh} onChange={handleLDHChange} style={{padding:5}}>
                     <FormControlLabel value={0} control={<Radio />} label="< 500" />
                     <FormControlLabel value={2} control={<Radio />} label="500-700" />
@@ -126,17 +145,21 @@ function Main(): any {
             </FormControl>
 
             <FormControl component="fieldset" style={{marginTop:15}}>
-                <FormLabel component="legend" style={{fontWeight:'bold', color:'black', fontSize:17.5}}>Hemoglobin(g/dL)</FormLabel>
+                <div className='label-div'>
+                    <span className='label-span'>Hemoglobin(g/dL)</span>
+                    <span className='score-span'>{hemo === -1 ? "" : `score: ${hemo}`}</span>
+                </div>
+                <span style={{fontWeight:'bold', color:'black', fontSize:17.5}}>Hemoglobin(g/dL)</span>
                 <RadioGroup aria-label="hemo" name="hemo" value={hemo} onChange={handleHemoChange} style={{padding:5}}>
                     <FormControlLabel value={0} control={<Radio />} label="< 13.3" />
                     <FormControlLabel value={3} control={<Radio />} label=">= 13.3" />
                 </RadioGroup>
             </FormControl>
-            <div style={{display:'flex', flexDirection:'row', justifyContent:'center', alignItems:'center', marginTop:20 }}>
+            <div className='btn-div'>
                 <Button color="primary" variant="contained" size="medium" onClick={handleTotalScore}>결과 보기</Button>
                 <Button color="secondary" variant="outlined" size="medium" onClick={handleInit} style={{marginLeft:15}}>초기화</Button>
             </div>
-            <div style={{display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'center', marginTop:15 }}>
+            <div className='resultstr-div'>
                 {totalScore >= 9 ? <p style={{ color: 'red', fontWeight: "bold" }}>{resultScoreString}</p> : <p style={{ color: 'green' }}>{resultScoreString}</p>}
                 {totalScore >= 9 ? <p style={{color:'red', fontWeight:"bold"}}>{resultString}</p> : <p style={{color:'green'}}>{resultString}</p>}
             </div>

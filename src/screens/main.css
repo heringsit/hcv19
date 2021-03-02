@@ -1,0 +1,33 @@
+.label-div{
+    display: flex; 
+    flex-direction: row;
+    align-items:center; 
+    justify-content:space-between; 
+}
+
+.label-span{
+    font-weight: bold; 
+    color: black; 
+    font-size: 17.5; 
+}
+
+.score-span{
+    font-size: 15; 
+    margin-left: 30; 
+}
+
+.resultstr-div{
+    display:flex;
+    flex-direction:column; 
+    justify-content:center; 
+    align-items:center; 
+    margin-top:15 
+}
+
+.btn-div{
+    display:flex; 
+    flex-direction:row; 
+    justify-content:center;
+    align-items:center; 
+    margin-top:20; 
+}
