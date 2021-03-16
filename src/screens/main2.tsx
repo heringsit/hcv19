@@ -13,7 +13,6 @@ import { Link, useHistory } from 'react-router-dom';
 import Snackbar from '@material-ui/core/Snackbar';
 import { useForm } from "react-hook-form";
 
-
 function Main2(): any {
     const [age, setAge] = React.useState(-1);
     const [crp, setCrp] = React.useState(-1);
@@ -35,6 +34,8 @@ function Main2(): any {
     useEffect(() => {
         handleTotalScore();
     }, [age, crp, ldh, hemo])
+
+    let history = useHistory();
 
     const handleAgeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         let selectVal = Number(event.target.value)
@@ -154,6 +155,15 @@ function Main2(): any {
         setResultScoreString("");
     }
 
+    const handleChangeURL = () => {
+        console.log(" history => ", history);
+        if(history.location.pathname === "/main2"){
+            history.replace("/main");
+          }else{
+            history.replace("/main2");
+        }
+    }
+
     return (
         <div style={{ display: 'flex', flexDirection: 'column', margin: 25, width: 360 }}>
             <div style={{ marginTop: 10, fontSize: 18, fontWeight: 'bold' }}>환자 검진 정보를 입력해 주세요</div>
@@ -260,8 +270,8 @@ function Main2(): any {
             <div style={{height:20}}></div>
 
             <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 20 }}>
-                {/* <Button color="primary" variant="contained" size="medium" onClick={handleTotalScore}>결과 보기</Button> */}
-                <Button color="secondary" variant="outlined" size="large" onClick={handleInit} style={{ marginLeft: 15 }}>초기화</Button>
+                <Button color="secondary" variant="outlined" size="large" onClick={handleInit} style={{ marginRight: 20 }}>초기화</Button>
+                <Button color="primary" variant="contained" size="large" onClick={handleChangeURL}>입력모드 전환</Button>
             </div>
         </div>
     );

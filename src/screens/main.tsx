@@ -9,6 +9,7 @@ import './main.css';
 import axios from 'axios';
 import comm from '../common';
 import Snackbar from '@material-ui/core/Snackbar';
+import { Link, useHistory } from 'react-router-dom';
 
 
 function Main(): any {
@@ -22,7 +23,9 @@ function Main(): any {
 
     useEffect(() => {
         handleTotalScore();
-    }, [age, crp, ldh, hemo])
+    }, [age, crp, ldh, hemo]);
+
+    let history = useHistory();
 
     const handleAgeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         let selectVal = Number(event.target.value)
@@ -75,7 +78,6 @@ function Main(): any {
             setResultScoreString(`위험도 지수: ${totalScore} < 9(기준값)`);
         }
 
-
         const patientDtoObj = {
             age: age,
             crp: crp,
@@ -84,7 +86,6 @@ function Main(): any {
         }
 
         console.log("patientDtoObj >>>>>> ", patientDtoObj)
-
         axios.post(comm.SERVER_URL + "/patient", patientDtoObj).then(res => {
             console.log(' res >> ', res);
         });
@@ -99,6 +100,14 @@ function Main(): any {
         setResultScoreString("");
     }
 
+    const handleChangeURL = () => {
+        console.log(" history => ", history);
+        if(history.location.pathname === "/main2"){
+            history.replace("/main");
+          }else{
+            history.replace("/main2");
+        }
+    }
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', margin: 25 }}>
@@ -189,8 +198,8 @@ function Main(): any {
             <div style={{height:20}}></div>
 
             <div className='btn-div'>
-                {/* <Button color="primary" variant="contained" size="medium" onClick={handleTotalScore}>결과 보기</Button> */}
-                <Button color="secondary" variant="outlined" size="large" onClick={handleInit} style={{ marginLeft: 15 }}>초기화</Button>
+                <Button color="secondary" variant="outlined" size="large" onClick={handleInit} style={{ marginRight: 20 }}>초기화</Button>
+                <Button color="primary" variant="contained" size="large" onClick={handleChangeURL}>입력모드 전환</Button>
             </div>
 
         </div>
