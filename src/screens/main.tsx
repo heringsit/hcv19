@@ -110,7 +110,7 @@ function Main(): any {
     }
 
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', margin: 25 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', margin: 15 }}>
             <div style={{ marginTop: 10, fontSize: 18, fontWeight: 'bold' }}>환자 검진 정보를 체크해 주세요</div>
             <FormControl component="fieldset" style={{ marginTop: 20 }}>
                 <div className='label-div'>
