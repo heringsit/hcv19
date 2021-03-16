@@ -24,7 +24,7 @@ function Main2(): any {
     const [realLdh, setRealldh] = React.useState(-1);
     const [realHemo, setRealhemo] = React.useState(-1);
 
-    const [totalScore, setTotalScore] = React.useState(0);
+    const [totalScore, setTotalScore] = React.useState(-1);
     const [resultString, setResultString] = React.useState("");
     const [resultScoreString, setResultScoreString] = React.useState("");
 
@@ -32,51 +32,71 @@ function Main2(): any {
     const ldhInput: any = useRef<HTMLDivElement>();
     const hemoInput: any = useRef<HTMLDivElement>();
 
+    useEffect(() => {
+        handleTotalScore();
+    }, [age, crp, ldh, hemo])
+
     const handleAgeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         let selectVal = Number(event.target.value)
         setAge(selectVal);
     };
 
     const handleCRPChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setRealcrp(Number(event.target.value));
         let inputVal = Number(event.target.value);
+        let settingVal = -1;
+        setRealcrp(Number(event.target.value));
         console.log(" inputVal CRP >> ", inputVal);
         if (inputVal < 1.4) {
-            inputVal = 0;
+            if(inputVal === 0){
+                settingVal = -1;
+            }else{
+                settingVal = 0;
+            }
         } else {
-            inputVal = 3;
+            settingVal = 3;
         }
-        setCrp(inputVal);
+        
+        setCrp(settingVal);
 
     };
 
     const handleLDHChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setRealldh(Number(event.target.value));
         let inputVal = Number(event.target.value);
+        let settingVal = -1;
         console.log(" inputVal LDH >> ", inputVal);
         if (inputVal < 500) {
-            inputVal = 0;
+            if(inputVal === 0){
+                settingVal = -1;
+            }else{
+                settingVal = 0;
+            }
         } else if (inputVal < 700) {
-            inputVal = 2;
+            settingVal = 2;
         } else {
-            inputVal = 4;
+            settingVal = 4;
         }
-        setLdh(inputVal);
+        setLdh(settingVal);
     };
-
+ 
     const handleHemoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setRealhemo(Number(event.target.value));
         let inputVal = Number(event.target.value);
+        let settingVal = -1;
         console.log(" inputVal Hemo >> ", inputVal);
         if (inputVal < 13.3) {
-            inputVal = 0;
+            if(inputVal === 0){
+                settingVal = -1;
+            }else{
+                settingVal = 0;
+            }
         } else {
-            inputVal = 3;
+            settingVal = 3;
         }
-        setHemo(inputVal);
+        setHemo(settingVal);
     };
 
-    const handleTotalScore = (event: any) => {
+    const handleTotalScore = () => {
         if (age === -1) {
             console.log(" 나이를 입력하세요. ")
             return;
@@ -98,13 +118,14 @@ function Main2(): any {
 
         let totalScore = age + crp + ldh + hemo;
         setTotalScore(totalScore);
+
         if (totalScore >= 9) {
             setResultString("중증 폐렴 전이 가능성이 높은 환자입니다.");
+            setResultScoreString(`위험도 지수: ${totalScore} >= 9(기준값)`);
         } else {
             setResultString("중증 폐렴 전이 가능성이 낮은 환자입니다.");
+            setResultScoreString(`위험도 지수: ${totalScore} < 9(기준값)`);
         }
-
-        setResultScoreString(`위험도 지수: ${totalScore}`);
 
         const patientDtoObj = {
             age: age,
@@ -123,6 +144,9 @@ function Main2(): any {
 
     const handleInit = (ev: any) => {
         setAge(-1);
+        setCrp(-1);
+        setLdh(-1);
+        setHemo(-1);
         setResultString("");
         crpInput.current.value = "";
         ldhInput.current.value = "";
@@ -132,50 +156,63 @@ function Main2(): any {
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', margin: 25, width: 360 }}>
-            <div style={{ marginTop: 10 }}>환자 검진 정보를 입력해 주세요</div>
+            <div style={{ marginTop: 10, fontSize: 18, fontWeight: 'bold' }}>환자 검진 정보를 입력해 주세요</div>
             <FormControl component="fieldset" style={{ marginTop: 20 }}>
                 <div className='label-div'>
                     <span className='label-span'>Age(years)</span>
-                    <span className='score-span'>{age === -1 ? "" : `score: ${age}`}</span>
+                    <span className='score-title'>scores</span>
                 </div>
                 <RadioGroup aria-label="age" name="age" value={age} onChange={handleAgeChange} style={{ padding: 5 }}>
-                    <FormControlLabel value={0} control={<Radio />} label="50 미만" />
-                    <FormControlLabel value={4} control={<Radio />} label="50대(50-59)" />
-                    <FormControlLabel value={5} control={<Radio />} label="60대(60-69)" />
-                    <FormControlLabel value={7} control={<Radio />} label="70대(70-79)" />
-                    <FormControlLabel value={10} control={<Radio />} label="80대(>=80) 이상" />
+                    <div className="each-controll-label">
+                        <FormControlLabel value={0} control={<Radio />} label="50 미만" />
+                        {age === 0 ? <span>{age}</span> : null}
+                    </div>
+                    <div className="each-controll-label">
+                        <FormControlLabel value={4} control={<Radio />} label="50대(50-59)" />
+                        {age === 4 ? <span>{age}</span> : null}
+                    </div>
+                    <div className="each-controll-label">
+                        <FormControlLabel value={5} control={<Radio />} label="60대(60-69)" />
+                        {age === 5 ? <span>{age}</span> : null}
+                    </div>
+                    <div className="each-controll-label">
+                        <FormControlLabel value={7} control={<Radio />} label="70대(70-79)" />
+                        {age === 7 ? <span>{age}</span> : null}
+                    </div>
+                    <div className="each-controll-label">
+                        <FormControlLabel value={10} control={<Radio />} label="80대(>=80) 이상" />
+                        {age === 10 ? <span>{age}</span> : null}
+                    </div>
                 </RadioGroup>
             </FormControl>
 
             <FormControl component="fieldset" style={{ marginTop: 15 }}>
-                <div className='label-div'>
-                    <span className='label-span'>C-reactive protein(mg/dL)</span>
-                    <span className='score-span'>{crp === -1 ? "" : `score: ${crp}`}</span>
+                <span className='label-span'>C-reactive protein(mg/dL)</span>
+                <div style={{ height: 12 }}></div>
+                <div className="each-controll-label">
+                    <TextField
+                        id="crp"
+                        label="mg/dL"
+                        type="number"
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                        variant="outlined"
+                        style={{ width: 250 }}
+                        onChange={handleCRPChange}
+                        inputRef={crpInput}
+                        // ref={crpInput}
+                        placeholder="ex) 1.4"
+                    />
+                    {crp !== -1 ? <span>{crp}</span> : null}
                 </div>
-                <div style={{height:12}}></div>
-                <TextField
-                    id="crp"
-                    label="mg/dL"
-                    type="number"
-                    InputLabelProps={{
-                        shrink: true,
-                    }}
-                    variant="outlined"
-                    style={{ width: 250 }}
-                    onChange={handleCRPChange}
-                    inputRef={crpInput}
-                    // ref={crpInput}
-                    placeholder="ex) 1.4"
-                />
+
             </FormControl>
 
             <FormControl component="fieldset" style={{ marginTop: 15 }}>
-                <div className='label-div'>
-                    <span className='label-span'>Lactate dehydrogenase(U/L)</span>
-                    <span className='score-span'>{ldh === -1 ? "" : `score: ${ldh}`}</span>
-                </div>
-                <div style={{height:12}}></div>
-
+                <span className='label-span'>Lactate dehydrogenase(U/L)</span>
+                <div style={{ height: 12 }}></div>
+                <div className="each-controll-label">
                 <TextField
                     id="ldh"
                     label="U/L"
@@ -188,42 +225,44 @@ function Main2(): any {
                     onChange={handleLDHChange}
                     inputRef={ldhInput}
                     placeholder="ex) 550"
-
                 />
+                {ldh !== -1 ? <span>{ldh}</span> : null}
+                </div>
             </FormControl>
 
             <FormControl component="fieldset" style={{ marginTop: 15 }}>
-                <div className='label-div'>
-                    <span className='label-span'>Hemoglobin(g/dL)</span>
-                    <span className='score-span'>{hemo === -1 ? "" : `score: ${hemo}`}</span>
+                <span className='label-span'>Hemoglobin(g/dL)</span>
+                <div style={{ height: 12 }}></div>
+                <div className="each-controll-label">
+                    <TextField
+                        id="ldh"
+                        label="g/dL"
+                        type="number"
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                        variant="outlined"
+                        style={{ width: 250 }}
+                        onChange={handleHemoChange}
+                        inputRef={hemoInput}
+                        placeholder="ex) 13.3"
+                    />
+                    {hemo !== -1 ? <span>{hemo}</span> : null}
                 </div>
-                <div style={{height:12}}></div>
-
-                <TextField
-                    id="ldh"
-                    label="g/dL"
-                    type="number"
-
-                    InputLabelProps={{
-                        shrink: true,
-                    }}
-                    variant="outlined"
-                    style={{ width: 250}}
-                    onChange={handleHemoChange}
-                    inputRef={hemoInput}
-                    placeholder="ex) 13.3"
-
-                />
             </FormControl>
-            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 20 }}>
-                <Button color="primary" variant="contained" size="medium" onClick={handleTotalScore}>결과 보기</Button>
-                <Button color="secondary" variant="outlined" size="medium" onClick={handleInit} style={{ marginLeft: 15 }}>초기화</Button>
-            </div>
+            <div style={{height:20}}></div>
+            {totalScore === -1 ? null : <div className="total-score-area"><span style={{ display:'flex', flex:1}}></span><span>Total Score: {totalScore}</span><span style={{width:5}}></span></div>}
+            <div style={{height:30}}></div>
             <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginTop: 15 }}>
-                {totalScore >= 9 ? <p style={{ color: 'red', fontWeight: "bold" }}>{resultScoreString}</p> : <p style={{ color: 'green' }}>{resultScoreString}</p>}
+                {totalScore >= 9 ? <span style={{ color: 'red', fontWeight: "bold" }}>{resultScoreString}</span> : <span style={{ color: 'green' }}>{resultScoreString}</span>}
                 {totalScore >= 9 ? <p style={{ color: 'red', fontWeight: "bold" }}>{resultString}</p> : <p style={{ color: 'green' }}>{resultString}</p>}
             </div>
+            <div style={{height:20}}></div>
 
+            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 20 }}>
+                {/* <Button color="primary" variant="contained" size="medium" onClick={handleTotalScore}>결과 보기</Button> */}
+                <Button color="secondary" variant="outlined" size="large" onClick={handleInit} style={{ marginLeft: 15 }}>초기화</Button>
+            </div>
         </div>
     );
 
